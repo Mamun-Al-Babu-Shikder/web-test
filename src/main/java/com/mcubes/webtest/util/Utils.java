@@ -87,30 +87,4 @@ public class Utils {
             return null;
         }
     }
-
-    private static String evaluationMathExpression(String value) {
-        Pattern pattern = Pattern.compile(MATH_RESOLVE_PATTERN);
-        Matcher matcher = pattern.matcher(value);
-        while (matcher.find()) {
-            String varName = matcher.group();
-            String expression = varName.replace(VAR_PREFIX, "")
-                    .replace(VAR_SUFFIX, "")
-                    .replaceAll("\\s+", "");
-            System.out.println(doEvaluationOnExpression(expression));
-        }
-        return value;
-    }
-
-    private static String doEvaluationOnExpression(String value) {
-        Pattern pattern = Pattern.compile(VAR_NAME_PATTERN);
-        Matcher matcher = pattern.matcher(value);
-        while (matcher.find()) {
-            String varName = matcher.group();
-            if (!Character.isDigit(varName.charAt(0))) {
-                Object obj = ThreadLocalStorage.get(varName);
-                value = value.replace(varName, obj.toString());
-            }
-        }
-        return value;
-    }
 }
