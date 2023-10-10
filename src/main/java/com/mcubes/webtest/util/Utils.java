@@ -1,9 +1,8 @@
 package com.mcubes.webtest.util;
 
-import com.mcubes.webtest.core.ThreadLocalStorage;
+import com.mcubes.webtest.core.GlobalStorageForStepExecution;
 import com.mcubes.webtest.enums.SelectorType;
-import com.mcubes.webtest.exception.IllegalAttributeException;
-import com.mcubes.webtest.exception.UndefineVariableException;
+import com.mcubes.webtest.exception.InvalidAttributeValueException;
 import com.mcubes.webtest.exception.WebElementNotFoundException;
 import com.mcubes.webtest.exception.WebElementSelectionException;
 import org.openqa.selenium.By;
@@ -11,7 +10,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,29 +18,26 @@ import static com.mcubes.webtest.constants.Constants.*;
 
 public class Utils {
 
-    public static WebElement resolveWebElementFrom(WebDriver driver, String selector) {
+    public static WebElement resolveWebElementFrom(WebDriver driver, SelectorType selectorType, String selector) {
         try {
-            By by = resolveByFromSelector(selector);
+            By by = resolveByFromSelector(selectorType, selector);
             return driver.findElement(by);
         } catch (NoSuchElementException e) {
-            throw new WebElementNotFoundException("web element not found according to [selector=%s]".formatted(selector));
+            throw new WebElementNotFoundException("Web element not found according to [selector='%s'] by [selector_type='%s']".formatted(selectorType.name().toLowerCase(), selector));
         }
     }
 
-    public static List<WebElement> resolveWebElementsFrom(WebDriver driver, String selector) {
+    public static List<WebElement> resolveWebElementsFrom(WebDriver driver, SelectorType selectorType, String selector) {
         try {
-            By by = resolveByFromSelector(selector);
+            By by = resolveByFromSelector(selectorType, selector);
             return driver.findElements(by);
         } catch (NoSuchElementException e) {
-            throw new WebElementNotFoundException("web elements not found according to [selector=%s]".formatted(selector));
+            throw new WebElementNotFoundException("Web elements not found according to [selector='%s'] by [selector_type='%s']".formatted(selectorType.name().toLowerCase(), selector));
         }
     }
 
-    public static By resolveByFromSelector(String selector) {
+    public static By resolveByFromSelector(SelectorType selectorType, String value) {
         try {
-            String[] typeValuePair = selector.split(":", 2);
-            SelectorType selectorType = SelectorType.from(typeValuePair[0]);
-            String value = typeValuePair[1];
             return switch (selectorType) {
                 case TAG -> By.tagName(value);
                 case NAME -> By.name(value);
@@ -53,38 +49,63 @@ public class Utils {
                 case PARTIAL_LINK_TEXT -> By.partialLinkText(value);
             };
         } catch (Exception ex) {
-            throw new WebElementSelectionException("found invalid [selector=%s], define selector prefix properly".formatted(selector));
+            throw new WebElementSelectionException("Found invalid web element selector [selector=%s]".formatted(selectorType.name().toLowerCase()));
         }
     }
 
     public static String resolveVariables(String value) {
-        Pattern pattern = Pattern.compile(VAR_RESOLVE_PATTERN);
+        Pattern pattern = Pattern.compile(EVAL_VAR_NAME_PATTERN);
         Matcher matcher = pattern.matcher(value);
+        Map<String, String> replacements = new LinkedHashMap<>();
         while (matcher.find()) {
             String varName = matcher.group();
-            String actualName = varName.replace(VAR_PREFIX, "").replace(VAR_SUFFIX, "");
-            Object obj = ThreadLocalStorage.get(actualName);
-            if (obj == null) {
-                throw new UndefineVariableException(actualName);
+            String actualName = validateAndGetActualVarName(matcher.group());
+            String strValue = GlobalStorageForStepExecution.getValueAsString(actualName);
+            replacements.put(varName, strValue);
+        }
+        if (replacements.isEmpty()) {
+            return value;
+        }
+        return resolvePatterns(value, replacements);
+    }
+
+
+    public static String validateAndGetActualVarName(String varName) {
+        if (varName != null && varName.matches(EVAL_VAR_NAME_PATTERN)) {
+            return varName.replace(VAR_PREFIX, "")
+                    .replace(VAR_SUFFIX, "");
+        }
+        throw new InvalidAttributeValueException("Invalid variable name found [name=%s]".formatted(varName));
+    }
+
+
+    private static String resolvePatterns(String input, Map<String, String> replacements) {
+        StringBuilder modifiedString = new StringBuilder();
+        StringBuilder currentPattern = new StringBuilder();
+        boolean inPattern = false;
+        for (int i = 0; i < input.length(); i++) {
+            char currentChar = input.charAt(i);
+            if (currentChar == '$' && i + 2 < input.length() && input.charAt(i + 1) == '{') {
+                inPattern = true;
+                currentPattern.setLength(0);
+                currentPattern.append(currentChar);
+                currentPattern.append(input.charAt(i + 1));
+                i++;
+            } else if (inPattern && currentChar == '}') {
+                currentPattern.append(currentChar);
+                String key = currentPattern.toString();
+                String replacement = replacements.getOrDefault(key, key);
+                modifiedString.append(replacement);
+                inPattern = false;
+                currentPattern.setLength(0);
+            } else if (inPattern) {
+                currentPattern.append(currentChar);
+            } else {
+                modifiedString.append(currentChar);
             }
-            value = value.replace(varName, obj.toString());
         }
-        return value;
+        return modifiedString.toString();
     }
 
-    public static String validateAndGetActualVarName(String value) {
-        String varName = value.trim();
-        if (varName.matches(VAR_RESOLVE_PATTERN)) {
-            return varName.replace(VAR_PREFIX, "").replace(VAR_SUFFIX, "");
-        }
-        throw new IllegalAttributeException("invalid variable name found [variable_name=%s]".formatted(varName));
-    }
 
-    public static String getActualVarName(String value) {
-        try {
-            return validateAndGetActualVarName(value);
-        } catch (IllegalAttributeException ex) {
-            return null;
-        }
-    }
 }

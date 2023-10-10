@@ -16,10 +16,14 @@ public class Step {
         this.action = action;
     }
 
-    public static Step build(JSONObject object) throws StepBuildException {
-        ActionType actionType = ActionType.from(object.getString(TYPE));
-        Action action = ActionFactory.getAction(actionType, object);
-        return new Step(action);
+    public static Step build(JSONObject object)  {
+        try {
+            ActionType actionType = ActionType.from(object.getString(TYPE));
+            Action action = ActionFactory.getAction(actionType, object);
+            return new Step(action);
+        } catch (Exception ex) {
+            throw new StepBuildException("Failed to build step", ex);
+        }
     }
 
     public void execute(WebDriver driver) {

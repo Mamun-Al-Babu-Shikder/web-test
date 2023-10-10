@@ -8,4 +8,8 @@ public class StepBuildException extends RuntimeException {
     public StepBuildException(String message) {
         super(message);
     }
+
+    public StepBuildException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

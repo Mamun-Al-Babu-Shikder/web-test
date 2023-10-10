@@ -5,7 +5,7 @@ public class UndefineVariableException extends RuntimeException {
         super();
     }
 
-    public UndefineVariableException(String varName) {
-        super("variable named '%s' is not defined!".formatted(varName));
+    public UndefineVariableException(String message) {
+        super(message);
     }
 }

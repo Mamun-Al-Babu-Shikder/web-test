@@ -1,11 +1,10 @@
 package com.mcubes.webtest.actions.lang;
 
 import com.mcubes.webtest.actions.Action;
+import com.mcubes.webtest.core.GlobalStorageForStepExecution;
 import com.mcubes.webtest.core.Step;
-import com.mcubes.webtest.core.ThreadLocalStorage;
-import com.mcubes.webtest.exception.TypeMismatchException;
+import com.mcubes.webtest.exception.TypeCastingException;
 import com.mcubes.webtest.util.Utils;
-import static com.mcubes.webtest.constants.Constants.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.selenium.WebDriver;
@@ -14,6 +13,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.mcubes.webtest.constants.Constants.VAR_PREFIX;
+import static com.mcubes.webtest.constants.Constants.VAR_SUFFIX;
 import static com.mcubes.webtest.constants.JsonAttributeKeys.*;
 
 public class ForeachLoop implements Action {
@@ -29,7 +30,7 @@ public class ForeachLoop implements Action {
 
     public static ForeachLoop from(JSONObject object) {
         String var = object.optString(VAR, null);
-        String itemsVarName = Utils.validateAndGetActualVarName(object.getString(ITEMS));
+        String itemsVarName = Utils.validateAndGetActualVarName(object.getString(ITEMS).trim());
         List<Step> steps = build(object.getJSONArray(STEPS));
         return new ForeachLoop(var, itemsVarName, steps);
     }
@@ -45,22 +46,15 @@ public class ForeachLoop implements Action {
 
     @Override
     public void trigger(WebDriver driver) {
-        Collection<?> items;
         try {
-             items = (Collection<?>) ThreadLocalStorage.get(itemsVarName);
-        } catch (ClassCastException ex) {
-            throw new TypeMismatchException("failed to convert [items=%s%s%s] to iterable for [type=foreach_loop]".formatted(VAR_PREFIX,itemsVarName, VAR_SUFFIX));
-        }
-        if (items == null) {
-            throw new NullPointerException("foreach loop items is null, value iterable object not found for [items=%s%s%s]".formatted(VAR_PREFIX,itemsVarName, VAR_SUFFIX));
-        }
-        for (Object item : items) {
-            if (var != null) {
-                ThreadLocalStorage.set(var, item);
+             Collection<?> items = GlobalStorageForStepExecution.getCollection(itemsVarName);
+            for (Object item : items) {
+                if (var != null)
+                    GlobalStorageForStepExecution.set(var, item);
+                steps.forEach(s->s.execute(driver));
             }
-            for (Step step : steps) {
-                step.execute(driver);
-            }
+        } catch (TypeCastingException ex) {
+            throw new TypeCastingException("Failed to convert variable [items=%s%s%s] to iterable for [type=foreach_loop]".formatted(VAR_PREFIX,itemsVarName, VAR_SUFFIX));
         }
     }
 }
