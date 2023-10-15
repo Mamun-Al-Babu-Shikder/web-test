@@ -1,8 +1,8 @@
 package com.mcubes.webtest.actions.lang;
 
 import com.mcubes.webtest.actions.Action;
+import com.mcubes.webtest.core.ExpEvaluator;
 import com.mcubes.webtest.enums.ActionType;
-import com.mcubes.webtest.util.Utils;
 import org.json.JSONObject;
 import org.openqa.selenium.WebDriver;
 
@@ -27,8 +27,8 @@ public class Print implements Action {
 
     @Override
     public void trigger(WebDriver driver) {
-        String value = Utils.resolveVariables(this.value);
-        System.out.print(value);
+        String string = ExpEvaluator.evalExpIfNeeded(value, String.class);
+        System.out.print(string);
         if (newline) System.out.println();
     }
 }

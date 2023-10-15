@@ -42,8 +42,9 @@ public enum DelayTimeUnit {
     }
 
     public static DelayTimeUnit from(String type) {
+        final String trimmedType = type.trim();
         return Arrays.stream(DelayTimeUnit.values())
-                .filter(p -> p.getValue().equals(type))
+                .filter(p -> p.getValue().equals(trimmedType))
                 .findFirst()
                 .orElseThrow(InvalidTypeException::new);
     }

@@ -1,6 +1,7 @@
 package com.mcubes.webtest.actions.web;
 
 import com.mcubes.webtest.actions.Action;
+import com.mcubes.webtest.core.ExpEvaluator;
 import com.mcubes.webtest.enums.NavigationType;
 import org.openqa.selenium.WebDriver;
 
@@ -20,7 +21,7 @@ public class Navigator implements Action {
             case REFRESH -> navigation.refresh();
             case BACK -> navigation.back();
             case FORWARD -> navigation.forward();
-            case TO -> navigation.to(url);
+            case TO -> navigation.to(ExpEvaluator.evalExpIfNeeded(url, String.class));
         }
     }
 }

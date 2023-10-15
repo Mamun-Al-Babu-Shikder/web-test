@@ -5,9 +5,20 @@ import com.mcubes.webtest.exception.InvalidTypeException;
 import java.util.Arrays;
 
 public enum ActionType {
-    OPEN_URL("open_url"), NAVIGATION("navigation"), CLICK("click"), ENTER_TEXT("enter_text"),
-    DEF_VAR("def_var"), FOREACH_LOOP("foreach_loop"),
-    DELAY("delay"), PRINT("print"), PRINTLN("println")
+    OPEN_URL("open_url"),
+    NAVIGATION("navigation"),
+    FIND_ELEMENT("find_element"),
+    CLICK("click"),
+    ENTER_TEXT("enter_text"),
+    DEFINE_VAR("def_var"),
+    IF_STATEMENT("if"),
+    IF_ELSE_STATEMENT("if_else"),
+    SWITCH_CASE_STATEMENT("switch"),
+    FOREACH_LOOP("foreach"),
+    DELAY("delay"),
+    PRINT("print"),
+    PRINTLN("println"),
+    EVALUATION("eval")
     ;
 
     private final String value;
@@ -25,6 +36,6 @@ public enum ActionType {
         return Arrays.stream(ActionType.values())
                 .filter(p -> p.value().equals(trimmedType))
                 .findFirst()
-                .orElseThrow(() -> new InvalidTypeException("Failed to resolve step type [type='%s']".formatted(trimmedType)));
+                .orElseThrow(() -> new InvalidTypeException("Failed to resolve step action type ['%s']".formatted(trimmedType)));
     }
 }

@@ -1,13 +1,7 @@
 package com.mcubes.webtest.actions;
 
-import com.mcubes.webtest.actions.lang.DefineVariable;
-import com.mcubes.webtest.actions.lang.Delay;
-import com.mcubes.webtest.actions.lang.ForeachLoop;
-import com.mcubes.webtest.actions.lang.Print;
-import com.mcubes.webtest.actions.web.Click;
-import com.mcubes.webtest.actions.web.EnterText;
-import com.mcubes.webtest.actions.web.Navigator;
-import com.mcubes.webtest.actions.web.OpenURL;
+import com.mcubes.webtest.actions.lang.*;
+import com.mcubes.webtest.actions.web.*;
 import com.mcubes.webtest.enums.ActionType;
 import com.mcubes.webtest.enums.NavigationType;
 import com.mcubes.webtest.exception.AttributeNotFoundException;
@@ -26,15 +20,20 @@ public class ActionFactory {
                     NavigationType navigationType = NavigationType.from(object.getString(VALUE));
                     yield new Navigator(navigationType, navigationType == NavigationType.TO ? object.getString(URL) : null);
                 }
+                case FIND_ELEMENT -> FindElement.from(object);
                 case CLICK -> Click.from(object);
                 case ENTER_TEXT -> EnterText.from(object);
-                case DEF_VAR -> DefineVariable.from(object);
+                case DEFINE_VAR -> DefineVariable.from(object);
+                case IF_STATEMENT -> null;
+                case IF_ELSE_STATEMENT -> IfElseStatement.from(object);
+                case SWITCH_CASE_STATEMENT -> null;
                 case FOREACH_LOOP -> ForeachLoop.from(object);
                 case DELAY -> Delay.from(object);
                 case PRINT, PRINTLN -> Print.from(object);
+                case EVALUATION -> Evaluation.from(object);
             };
         } catch (JSONException ex) {
-            throw new AttributeNotFoundException("Expected attribute missing for step type ['%s'], %s".formatted(type.name().toLowerCase(), ex.getMessage()));
+            throw new AttributeNotFoundException("Expected attribute missing for step action type ['%s'], %s".formatted(type.value(), ex.getMessage()));
         }
     }
 }

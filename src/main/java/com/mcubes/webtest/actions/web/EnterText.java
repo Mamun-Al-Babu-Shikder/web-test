@@ -1,7 +1,8 @@
 package com.mcubes.webtest.actions.web;
 
+import com.mcubes.webtest.core.ExpEvaluator;
 import com.mcubes.webtest.enums.SelectorType;
-import com.mcubes.webtest.util.Utils;
+import com.mcubes.webtest.util.UtilityMethods;
 import org.json.JSONObject;
 import org.openqa.selenium.WebElement;
 
@@ -16,7 +17,7 @@ public class EnterText extends AbstractWebElementAction {
     }
 
     public static EnterText from(JSONObject object) {
-        String type = object.getString(SELECTOR_TYPE).trim();
+        String type = object.getString(SELECT_BY).trim();
         String selector = object.getString(SELECTOR);
         String text = object.getString(TEXT);
         return new EnterText(SelectorType.from(type), selector, text);
@@ -24,7 +25,7 @@ public class EnterText extends AbstractWebElementAction {
 
     @Override
     protected void trigger(WebElement element) {
-        String text = Utils.resolveVariables(this.text);
-        element.sendKeys(text);
+        String text = ExpEvaluator.evalExpIfNeeded(this.text, String.class);
+        UtilityMethods.enterTextOnWebElement(element, text);
     }
 }

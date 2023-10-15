@@ -1,7 +1,8 @@
 package com.mcubes.webtest.actions.lang;
 
 import com.mcubes.webtest.actions.Action;
-import com.mcubes.webtest.core.GlobalStorageForStepExecution;
+import com.mcubes.webtest.constants.Constants;
+import com.mcubes.webtest.core.ExpEvaluator;
 import com.mcubes.webtest.enums.DelayTimeUnit;
 import com.mcubes.webtest.exception.InvalidAttributeValueException;
 import com.mcubes.webtest.exception.InvalidValueException;
@@ -9,10 +10,10 @@ import com.mcubes.webtest.util.Utils;
 import org.json.JSONObject;
 import org.openqa.selenium.WebDriver;
 
-import static com.mcubes.webtest.constants.Constants.DELAY_TIME_PATTERN;
-import static com.mcubes.webtest.constants.Constants.EVAL_VAR_NAME_PATTERN;
 import static com.mcubes.webtest.constants.JsonAttributeKeys.TIME_UNIT;
 import static com.mcubes.webtest.constants.JsonAttributeKeys.VALUE;
+import static com.mcubes.webtest.enums.Patterns.DELAY_TIME;
+import static com.mcubes.webtest.enums.Patterns.EVAL_VAR_NAME;
 
 public class Delay implements Action {
     private final long time;
@@ -30,9 +31,9 @@ public class Delay implements Action {
         String varName = null;
         String value = object.getString(VALUE).trim();
         String unitName = object.optString(TIME_UNIT, null);
-        if (value.matches(EVAL_VAR_NAME_PATTERN)) {
-            varName = Utils.validateAndGetActualVarName(value);
-        } else if (value.matches(DELAY_TIME_PATTERN)) {
+        if (value.matches(EVAL_VAR_NAME.pattern())) {
+            varName = Utils.validateAndGetEvalVarName(value);
+        } else if (value.matches(DELAY_TIME.pattern())) {
             time = Long.parseLong(value);
         } else {
             throw new InvalidAttributeValueException("Failed to resolve the value for delay [value=%s]".formatted(value));
@@ -42,7 +43,8 @@ public class Delay implements Action {
 
     @Override
     public void trigger(WebDriver driver) {
-        long value = timeVarName == null ? time : GlobalStorageForStepExecution.getLong(timeVarName);
+        long value = timeVarName == null ? time :
+                ExpEvaluator.evaluate(Constants.VAR_PREFIX + timeVarName, Long.class);
         if (value < 0) {
             throw new InvalidValueException("Delay time can't be negative value, found [value=%d]".formatted(value));
         }
