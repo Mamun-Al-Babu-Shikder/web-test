@@ -24,7 +24,7 @@ public class ActionFactory {
                 case CLICK -> Click.from(object);
                 case ENTER_TEXT -> EnterText.from(object);
                 case DEFINE_VAR -> DefineVariable.from(object);
-                case IF_STATEMENT -> null;
+                case IF_STATEMENT -> IfStatement.from(object);
                 case IF_ELSE_STATEMENT -> IfElseStatement.from(object);
                 case SWITCH_CASE_STATEMENT -> null;
                 case FOREACH_LOOP -> ForeachLoop.from(object);
