@@ -4,6 +4,7 @@ import com.mcubes.webtest.actions.Action;
 import com.mcubes.webtest.actions.ActionFactory;
 import com.mcubes.webtest.enums.ActionType;
 import com.mcubes.webtest.exception.StepBuildException;
+import com.mcubes.webtest.exception.StepExecutionException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -48,6 +49,10 @@ public class Step {
         if (stepContext == null) {
             throw new NullPointerException("Found 'null' value for Step-Context.");
         }
-        action.trigger(stepContext);
+        try {
+            action.trigger(stepContext);
+        } catch (Exception ex) {
+            throw new StepExecutionException("Failed to execute the step.", ex);
+        }
     }
 }
