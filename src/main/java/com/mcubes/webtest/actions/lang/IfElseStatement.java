@@ -50,6 +50,8 @@ public class IfElseStatement implements Action {
         for (Branch branch : branches) {
             if (ExpEvaluator.evaluate(stepContext, branch.condition(), Boolean.class)) {
                 branch.steps().forEach(s -> s.execute(stepContext));
+                isExecutedAnyBranch = true;
+                break;
             }
         }
         if (!isExecutedAnyBranch && elseBranch != null) {
