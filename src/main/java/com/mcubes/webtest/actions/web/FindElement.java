@@ -23,7 +23,7 @@ public class FindElement extends AbstractWebElementAction {
     }
 
     @Override
-    protected void trigger(WebElement element) {
-        StepContext.getInstance().set(varName, element);
+    protected void trigger(StepContext stepContext, WebElement element) {
+        stepContext.set(varName, element);
     }
 }

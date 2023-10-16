@@ -1,6 +1,7 @@
 package com.mcubes.webtest.actions.web;
 
 import com.mcubes.webtest.core.ExpEvaluator;
+import com.mcubes.webtest.core.StepContext;
 import com.mcubes.webtest.enums.SelectorType;
 import com.mcubes.webtest.util.UtilityMethods;
 import org.json.JSONObject;
@@ -24,8 +25,8 @@ public class EnterText extends AbstractWebElementAction {
     }
 
     @Override
-    protected void trigger(WebElement element) {
-        String text = ExpEvaluator.evalExpIfNeeded(this.text, String.class);
+    protected void trigger(StepContext stepContext, WebElement element) {
+        String text = ExpEvaluator.evalExpIfNeeded(stepContext, this.text, String.class);
         UtilityMethods.enterTextOnWebElement(element, text);
     }
 }

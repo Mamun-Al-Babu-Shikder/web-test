@@ -3,10 +3,10 @@ package com.mcubes.webtest.actions.lang;
 import com.mcubes.webtest.actions.Action;
 import com.mcubes.webtest.core.ExpEvaluator;
 import com.mcubes.webtest.core.Step;
+import com.mcubes.webtest.core.StepContext;
 import com.mcubes.webtest.exception.ExpressionEvaluationException;
 import com.mcubes.webtest.exception.InvalidConditionException;
 import org.json.JSONObject;
-import org.openqa.selenium.WebDriver;
 
 import java.util.List;
 
@@ -30,16 +30,16 @@ public class IfStatement implements Action {
     }
 
     @Override
-    public void trigger(WebDriver driver) {
+    public void trigger(StepContext stepContext) {
         Boolean value;
         try {
-            value = ExpEvaluator.evaluate(condition, Boolean.class);
-        } catch (ExpressionEvaluationException e)  {
+            value = ExpEvaluator.evaluate(stepContext, condition, Boolean.class);
+        } catch (ExpressionEvaluationException e) {
             throw new InvalidConditionException("Invalid condition [%s] found while execute if statement".formatted(condition));
         }
 
         if (value == Boolean.TRUE) {
-            steps.forEach(s -> s.execute(driver));
+            steps.forEach(s -> s.execute(stepContext));
         }
     }
 }

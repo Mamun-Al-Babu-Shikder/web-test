@@ -6,7 +6,6 @@ import com.mcubes.webtest.enums.ActionType;
 import com.mcubes.webtest.exception.StepBuildException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.openqa.selenium.WebDriver;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +25,7 @@ public class Step {
         return type;
     }
 
-    public static Step build(JSONObject object)  {
+    public static Step build(JSONObject object) {
         try {
             ActionType actionType = ActionType.from(object.getString(TYPE));
             Action action = ActionFactory.getAction(actionType, object);
@@ -45,7 +44,10 @@ public class Step {
         return steps;
     }
 
-    public void execute(WebDriver driver) {
-        action.trigger(driver);
+    public void execute(StepContext stepContext) {
+        if (stepContext == null) {
+            throw new NullPointerException("Found 'null' value for Step-Context.");
+        }
+        action.trigger(stepContext);
     }
 }

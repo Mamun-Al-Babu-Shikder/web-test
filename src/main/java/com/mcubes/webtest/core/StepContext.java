@@ -4,6 +4,7 @@ import com.mcubes.webtest.annotation.ResolvableMethod;
 import com.mcubes.webtest.exception.TypeCastingException;
 import com.mcubes.webtest.exception.UndefineVariableException;
 import com.mcubes.webtest.util.UtilityMethods;
+import org.openqa.selenium.WebDriver;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.lang.reflect.Method;
@@ -11,37 +12,56 @@ import java.util.Map;
 
 public class StepContext {
     private static StepContext context;
+    private WebDriver webDriver;
     private final StandardEvaluationContext local;
     private final ThreadLocal<StandardEvaluationContext> global;
 
-    private StepContext() {
+    private StepContext(WebDriver webDriver) {
         this.local = null;
         StandardEvaluationContext context = new StandardEvaluationContext();
         registerMethods(context);
+        this.webDriver = webDriver;
         this.global = ThreadLocal.withInitial(() -> context);
     }
 
-    private StepContext(StandardEvaluationContext context) {
+    private StepContext(StandardEvaluationContext context, WebDriver webDriver) {
         registerMethods(context);
         this.local = context;
+        this.webDriver = webDriver;
         this.global = null;
     }
 
-    public synchronized static StepContext getInstance() {
+    public synchronized static StepContext getInstance(WebDriver webDriver) {
         if (context == null) {
-            context = new StepContext();
+            context = new StepContext(webDriver);
         }
         return context;
     }
 
-    public StepContext getInstance(Map<String, Object> variables) {
+    public synchronized static StepContext getInstance() {
+        return getInstance((WebDriver) null);
+    }
+
+    public StepContext getInstance(Map<String, Object> variables, WebDriver webDriver) {
         StandardEvaluationContext context = new StandardEvaluationContext();
         context.setVariables(variables);
-        return new StepContext(context);
+        return new StepContext(context, webDriver);
+    }
+
+    public StepContext getInstance(Map<String, Object> variables) {
+       return getInstance(variables, (WebDriver) null);
     }
 
     public StandardEvaluationContext context() {
         return local != null ? local : global.get();
+    }
+
+    public void setWebDriver(WebDriver webDriver) {
+        this.webDriver = webDriver;
+    }
+
+    public WebDriver getWebDriver() {
+        return this.webDriver;
     }
 
     public void set(String key, Object value) {
@@ -72,54 +92,4 @@ public class StepContext {
             }
         }
     }
-
-
-
-
-
-    /*
-    public boolean getBool(String name) {
-        if (get(name) instanceof Boolean value) return value;
-        throw new TypeCastingException(name, "boolean");
-    }
-
-    public long getLong(String name) {
-        if (get(name) instanceof Long value) return value;
-        throw new TypeCastingException(name, "integer");
-    }
-
-    public double getDouble(String name) {
-        if (get(name) instanceof Double value) return value;
-        throw new TypeCastingException(name, "float");
-    }
-
-    public String getString(String name) {
-        if (get(name) instanceof String value) return value;
-        throw new TypeCastingException(name, "string");
-    }
-
-    public WebElement getWebElement(String name) {
-        if (get(name) instanceof WebElement element) return element;
-        throw new TypeCastingException(name, "web_element");
-    }
-
-    public List<WebElement> getListOfWebElement(String name) {
-        try {
-            return (List<WebElement>) get(name);
-        } catch (Exception ex) {
-            throw new TypeCastingException(name, "web_elements");
-        }
-    }
-
-    public Collection<?> getCollection(String name) {
-        if (get(name) instanceof Collection<?> value) return value;
-        throw new TypeCastingException(name, "iterable");
-    }
-
-    public String getValueAsString(String name) {
-        Object value = get(name);
-        return value.toString();
-    }
-     */
-
 }

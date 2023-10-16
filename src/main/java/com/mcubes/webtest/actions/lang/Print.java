@@ -2,9 +2,9 @@ package com.mcubes.webtest.actions.lang;
 
 import com.mcubes.webtest.actions.Action;
 import com.mcubes.webtest.core.ExpEvaluator;
+import com.mcubes.webtest.core.StepContext;
 import com.mcubes.webtest.enums.ActionType;
 import org.json.JSONObject;
-import org.openqa.selenium.WebDriver;
 
 import static com.mcubes.webtest.constants.JsonAttributeKeys.TYPE;
 import static com.mcubes.webtest.constants.JsonAttributeKeys.VALUE;
@@ -26,8 +26,8 @@ public class Print implements Action {
     }
 
     @Override
-    public void trigger(WebDriver driver) {
-        String string = ExpEvaluator.evalExpIfNeeded(value, String.class);
+    public void trigger(StepContext stepContext) {
+        String string = ExpEvaluator.evalExpIfNeeded(stepContext, value, String.class);
         System.out.print(string);
         if (newline) System.out.println();
     }

@@ -4,10 +4,10 @@ import com.mcubes.webtest.actions.Action;
 import com.mcubes.webtest.component.Branch;
 import com.mcubes.webtest.core.ExpEvaluator;
 import com.mcubes.webtest.core.Step;
+import com.mcubes.webtest.core.StepContext;
 import com.mcubes.webtest.exception.InvalidAttributeValueException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.openqa.selenium.WebDriver;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -44,17 +44,16 @@ public class IfElseStatement implements Action {
         return new IfElseStatement(branches, elseBranch);
     }
 
-
     @Override
-    public void trigger(WebDriver driver) {
+    public void trigger(StepContext stepContext) {
         boolean isExecutedAnyBranch = false;
         for (Branch branch : branches) {
-            if (ExpEvaluator.evaluate(branch.condition(), Boolean.class)) {
-                branch.steps().forEach(s -> s.execute(driver));
+            if (ExpEvaluator.evaluate(stepContext, branch.condition(), Boolean.class)) {
+                branch.steps().forEach(s -> s.execute(stepContext));
             }
         }
         if (!isExecutedAnyBranch && elseBranch != null) {
-            elseBranch.steps().forEach(s -> s.execute(driver));
+            elseBranch.steps().forEach(s -> s.execute(stepContext));
         }
     }
 }

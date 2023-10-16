@@ -5,7 +5,6 @@ import com.mcubes.webtest.core.ExpEvaluator;
 import com.mcubes.webtest.core.StepContext;
 import com.mcubes.webtest.util.Utils;
 import org.json.JSONObject;
-import org.openqa.selenium.WebDriver;
 
 import static com.mcubes.webtest.constants.JsonAttributeKeys.EXPRESSION;
 import static com.mcubes.webtest.constants.JsonAttributeKeys.VAR;
@@ -29,10 +28,10 @@ public class Evaluation implements Action {
     }
 
     @Override
-    public void trigger(WebDriver driver) {
-        Object object = ExpEvaluator.evaluate(exprssion);
+    public void trigger(StepContext stepContext) {
+        Object object = ExpEvaluator.evaluate(stepContext, exprssion);
         if (varName != null) {
-            StepContext.getInstance().set(varName, object);
+            stepContext.set(varName, object);
         }
     }
 }

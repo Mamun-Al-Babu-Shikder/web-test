@@ -1,7 +1,7 @@
 package com.mcubes.webtest.actions;
 
-import org.openqa.selenium.WebDriver;
+import com.mcubes.webtest.core.StepContext;
 
 public interface Action {
-    void trigger(WebDriver driver);
+    void trigger(StepContext stepContext);
 }

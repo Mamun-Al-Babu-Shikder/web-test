@@ -1,5 +1,6 @@
 package com.mcubes.webtest.actions.web;
 
+import com.mcubes.webtest.core.StepContext;
 import com.mcubes.webtest.enums.SelectorType;
 import com.mcubes.webtest.util.UtilityMethods;
 import org.json.JSONObject;
@@ -20,7 +21,7 @@ public class Click extends AbstractWebElementAction {
     }
 
     @Override
-    protected void trigger(WebElement element) {
+    protected void trigger(StepContext stepContext, WebElement element) {
         UtilityMethods.clickOnWebElement(element);
     }
 }

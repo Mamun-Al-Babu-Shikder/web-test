@@ -2,9 +2,8 @@ package com.mcubes.webtest.actions.web;
 
 import com.mcubes.webtest.actions.Action;
 import com.mcubes.webtest.core.ExpEvaluator;
+import com.mcubes.webtest.core.StepContext;
 import com.mcubes.webtest.enums.SelectorType;
-import com.mcubes.webtest.util.Utils;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import static com.mcubes.webtest.util.Utils.resolveWebElementFrom;
@@ -19,11 +18,11 @@ public abstract class AbstractWebElementAction implements Action {
     }
 
     @Override
-    public void trigger(WebDriver driver) {
-        String selector = ExpEvaluator.evalExpIfNeeded(this.selector, String.class);
-        WebElement element = resolveWebElementFrom(driver, selectorType, selector);
-        trigger(element);
+    public void trigger(StepContext stepContext) {
+        String selector = ExpEvaluator.evalExpIfNeeded(stepContext, this.selector, String.class);
+        WebElement element = resolveWebElementFrom(stepContext.getWebDriver(), selectorType, selector);
+        trigger(stepContext, element);
     }
 
-    protected abstract void trigger(WebElement element);
+    protected abstract void trigger(StepContext stepContext, WebElement element);
 }

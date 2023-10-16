@@ -3,14 +3,11 @@ package com.mcubes.webtest.actions.lang;
 import com.mcubes.webtest.actions.Action;
 import com.mcubes.webtest.core.ExpEvaluator;
 import com.mcubes.webtest.core.StepContext;
-import com.mcubes.webtest.exception.InvalidAttributeValueException;
 import com.mcubes.webtest.util.Utils;
 import org.json.JSONObject;
-import org.openqa.selenium.WebDriver;
 
 import static com.mcubes.webtest.constants.JsonAttributeKeys.NAME;
 import static com.mcubes.webtest.constants.JsonAttributeKeys.VALUE;
-import static com.mcubes.webtest.enums.Patterns.VAR_NAME;
 
 public class DefineVariable implements Action {
     private final String name;
@@ -29,7 +26,7 @@ public class DefineVariable implements Action {
     }
 
     @Override
-    public void trigger(WebDriver driver) {
-        StepContext.getInstance().set(name, ExpEvaluator.evaluate(value));
+    public void trigger(StepContext stepContext) {
+        stepContext.set(name, ExpEvaluator.evaluate(stepContext, value));
     }
 }

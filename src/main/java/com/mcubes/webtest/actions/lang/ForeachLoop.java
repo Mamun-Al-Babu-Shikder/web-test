@@ -8,7 +8,6 @@ import com.mcubes.webtest.exception.ExpressionEvaluationException;
 import com.mcubes.webtest.exception.InvalidAttributeValueException;
 import com.mcubes.webtest.exception.TypeCastingException;
 import org.json.JSONObject;
-import org.openqa.selenium.WebDriver;
 
 import java.util.Collection;
 import java.util.List;
@@ -40,19 +39,18 @@ public class ForeachLoop implements Action {
     }
 
     @Override
-    public void trigger(WebDriver driver) {
+    public void trigger(StepContext stepContext) {
         Collection<?> items;
-        StepContext context = StepContext.getInstance();
         try {
-            items = ExpEvaluator.evaluate(this.items, Collection.class);
+            items = ExpEvaluator.evaluate(stepContext, this.items, Collection.class);
         } catch (ExpressionEvaluationException ex) {
             throw new TypeCastingException("Failed to convert value from 'items' to iterable type for step action [type=%s]"
                     .formatted(FOREACH_LOOP.value()));
         }
         for (Object item : items) {
             if (var != null)
-                context.set(var, item);
-            steps.forEach(s -> s.execute(driver));
+                stepContext.set(var, item);
+            steps.forEach(s -> s.execute(stepContext));
         }
     }
 }

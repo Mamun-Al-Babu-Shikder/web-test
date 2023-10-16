@@ -1,7 +1,7 @@
 package com.mcubes.webtest.actions.web;
 
 import com.mcubes.webtest.actions.Action;
-import org.openqa.selenium.WebDriver;
+import com.mcubes.webtest.core.StepContext;
 
 public class OpenURL implements Action {
     private final String url;
@@ -11,7 +11,7 @@ public class OpenURL implements Action {
     }
 
     @Override
-    public void trigger(WebDriver driver) {
-        driver.get(url);
+    public void trigger(StepContext stepContext) {
+        stepContext.getWebDriver().get(url);
     }
 }
