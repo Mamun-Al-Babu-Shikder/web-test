@@ -8,11 +8,6 @@ import java.util.List;
 
 public class UtilityMethods {
 
-    @ResolvableMethod("mcubes")
-    public static Object mcubes(Integer a, Integer b) {
-        return a + b;
-    }
-
     @ResolvableMethod("list")
     public static List<Object> createList() {
         return new ArrayList<>();
