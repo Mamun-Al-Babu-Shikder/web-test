@@ -6,10 +6,13 @@ import java.util.Arrays;
 
 public enum ActionType {
     OPEN_URL("open_url"),
+    OPEN_WINDOW("open_window"),
+    SWITCH_WINDOW("switch_window"),
     NAVIGATION("navigation"),
     FIND_ELEMENT("find_element"),
     CLICK("click"),
     ENTER_TEXT("enter_text"),
+
     DEFINE_VAR("def_var"),
     IF_STATEMENT("if"),
     IF_ELSE_STATEMENT("if_else"),

@@ -7,6 +7,7 @@ public class JsonAttributeKeys {
     public static final String STEPS = "steps";
     public static final String TYPE = "type";
     public static final String URL = "url";
+    public static final String TO = "to";
     public static final String SELECT_BY = "select_by";
     public static final String SELECTOR = "selector";
     public static final String TEXT = "text";

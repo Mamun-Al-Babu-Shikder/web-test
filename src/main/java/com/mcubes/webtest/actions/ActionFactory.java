@@ -15,7 +15,9 @@ public class ActionFactory {
     public static Action getAction(ActionType type, JSONObject object) {
         try {
             return switch (type) {
-                case OPEN_URL -> new OpenURL(object.getString(URL));
+                case OPEN_URL -> OpenURL.from(object);
+                case OPEN_WINDOW -> OpenWindow.from(object);
+                case SWITCH_WINDOW -> SwitchWindow.from(object);
                 case NAVIGATION -> {
                     NavigationType navigationType = NavigationType.from(object.getString(VALUE));
                     yield new Navigator(navigationType, navigationType == NavigationType.TO ? object.getString(URL) : null);

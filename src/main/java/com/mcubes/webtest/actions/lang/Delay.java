@@ -12,7 +12,7 @@ import org.json.JSONObject;
 
 import static com.mcubes.webtest.constants.JsonAttributeKeys.TIME_UNIT;
 import static com.mcubes.webtest.constants.JsonAttributeKeys.VALUE;
-import static com.mcubes.webtest.enums.Patterns.DELAY_TIME;
+import static com.mcubes.webtest.enums.Patterns.POSITIVE_NUMBER;
 import static com.mcubes.webtest.enums.Patterns.EVAL_VAR_NAME;
 
 public class Delay implements Action {
@@ -33,7 +33,7 @@ public class Delay implements Action {
         String unitName = object.optString(TIME_UNIT, null);
         if (value.matches(EVAL_VAR_NAME.pattern())) {
             varName = Utils.validateAndGetEvalVarName(value);
-        } else if (value.matches(DELAY_TIME.pattern())) {
+        } else if (value.matches(POSITIVE_NUMBER.pattern())) {
             time = Long.parseLong(value);
         } else {
             throw new InvalidAttributeValueException("Failed to resolve the value for delay [value=%s]".formatted(value));
