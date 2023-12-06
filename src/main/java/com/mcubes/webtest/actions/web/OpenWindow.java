@@ -33,7 +33,7 @@ public class OpenWindow implements Action {
         String to = object.optString(TO, null);
 
         if (url == null && to == null) {
-            throw new AttributeNotFoundException("Attribute 'ur' and 'to' missing for step action type '%s'. Please provide both or one of them.".formatted(OPEN_WINDOW.value()));
+            throw new AttributeNotFoundException("Attribute 'url' and 'to' missing for step action type '%s'. Please provide both or one of them.".formatted(OPEN_WINDOW.value()));
         }
 
         if (to != null) {

@@ -11,11 +11,11 @@ import static com.mcubes.webtest.constants.JsonAttributeKeys.VAR;
 
 public class Evaluation implements Action {
     private final String varName;
-    private final String exprssion;
+    private final String expression;
 
     public Evaluation(String varName, String exprssion) {
         this.varName = varName;
-        this.exprssion = exprssion;
+        this.expression = exprssion;
     }
 
     public static Evaluation from(JSONObject object) {
@@ -29,7 +29,7 @@ public class Evaluation implements Action {
 
     @Override
     public void trigger(StepContext stepContext) {
-        Object object = ExpEvaluator.evaluate(stepContext, exprssion);
+        Object object = ExpEvaluator.evaluate(stepContext, expression);
         if (varName != null) {
             stepContext.set(varName, object);
         }
