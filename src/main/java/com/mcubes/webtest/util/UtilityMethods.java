@@ -1,16 +1,22 @@
 package com.mcubes.webtest.util;
 
 import com.mcubes.webtest.annotation.ResolvableMethod;
+import com.mcubes.webtest.core.StepContext;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class UtilityMethods {
 
     @ResolvableMethod("list")
-    public static List<Object> createList() {
-        return new ArrayList<>();
+    public static List<Object> createList(Object... values) {
+        return new ArrayList<>(List.of(values));
+    }
+
+    @ResolvableMethod("set")
+    public static Set<Object> createSet(Object... values) {
+        return new HashSet<>(Set.of(values));
     }
 
     @ResolvableMethod("is_null")
@@ -38,6 +44,31 @@ public class UtilityMethods {
         if (object instanceof WebElement element) {
             element.clear();
         }
+    }
+
+    @ResolvableMethod("first_window")
+    public static String firstWindowHandler() {
+        return listOfWindowHandlers().get(0);
+    }
+
+    @ResolvableMethod("last_window")
+    public static String lastWindowHandler() {
+        List<String> handlers = listOfWindowHandlers();
+        return handlers.get(handlers.size() - 1);
+    }
+
+    private static List<String> listOfWindowHandlers() {
+        StepContext context = StepContext.getInstance();
+        WebDriver driver = context.getWebDriver();
+        if (driver == null || driver.getWindowHandles().isEmpty()) {
+            throw new RuntimeException("Window not found!");
+        }
+        return List.copyOf(driver.getWindowHandles());
+    }
+
+    @ResolvableMethod("is_displayed")
+    public static boolean isWebElementDisplayed(WebElement element) {
+        return element.isDisplayed();
     }
 
 }
