@@ -3,24 +3,29 @@ package com.mcubes.webtest.actions.web;
 import com.mcubes.webtest.actions.Action;
 import com.mcubes.webtest.core.ExpEvaluator;
 import com.mcubes.webtest.core.StepContext;
-import com.mcubes.webtest.enums.SelectorType;
+import com.mcubes.webtest.core.WebElementProvider;
+import org.json.JSONObject;
 import org.openqa.selenium.WebElement;
 
-import static com.mcubes.webtest.util.Utils.resolveWebElementFrom;
+import static com.mcubes.webtest.constants.JsonAttributeKeys.ELEMENT;
 
 public abstract class AbstractWebElementAction implements Action {
-    private final SelectorType selectorType;
-    private final String selector;
+    private String elementObject;
+    private WebElementProvider webElementProvider;
 
-    public AbstractWebElementAction(SelectorType selectorType, String selector) {
-        this.selectorType = selectorType;
-        this.selector = selector;
+    public AbstractWebElementAction(JSONObject object) {
+        Object elementObject = object.get(ELEMENT);
+        if (elementObject instanceof JSONObject obj) {
+            this.webElementProvider = WebElementProvider.from(obj);
+        } else {
+            this.elementObject = elementObject.toString();
+        }
     }
 
     @Override
     public void trigger(StepContext stepContext) {
-        String selector = ExpEvaluator.evalExpIfNeeded(stepContext, this.selector, String.class);
-        WebElement element = resolveWebElementFrom(stepContext.getWebDriver(), selectorType, selector);
+        WebElement element = webElementProvider != null ? webElementProvider.getWebElement(stepContext)
+                : ExpEvaluator.evaluate(stepContext, elementObject, WebElement.class);
         trigger(stepContext, element);
     }
 

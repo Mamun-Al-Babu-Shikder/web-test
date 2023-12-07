@@ -22,9 +22,11 @@ public class ActionFactory {
                     NavigationType navigationType = NavigationType.from(object.getString(VALUE));
                     yield new Navigator(navigationType, navigationType == NavigationType.TO ? object.getString(URL) : null);
                 }
-                case FIND_ELEMENT -> FindElement.from(object);
-                case CLICK -> Click.from(object);
-                case ENTER_TEXT -> EnterText.from(object);
+                case FIND_ELEMENT -> new FindElement(object);
+                case FIND_ELEMENTS -> new FindElements(object);
+                case WEB_ELEMENT_OPT -> new WebElementOperation(object);
+                case CLICK -> new Click(object);
+                case ENTER_TEXT -> new EnterText(object);
                 case DEFINE_VAR -> DefineVariable.from(object);
                 case IF_STATEMENT -> IfStatement.from(object);
                 case IF_ELSE_STATEMENT -> IfElseStatement.from(object);

@@ -17,42 +17,6 @@ import static com.mcubes.webtest.enums.Patterns.VAR_NAME;
 
 public class Utils {
 
-    public static WebElement resolveWebElementFrom(WebDriver driver, SelectorType selectorType, String selector) {
-        try {
-            By by = resolveByFromSelector(selectorType, selector);
-            return driver.findElement(by);
-        } catch (NoSuchElementException e) {
-            throw new WebElementNotFoundException("Web element not found according to [selector='%s'] by [selector_type='%s']".formatted(selector, selectorType.name().toLowerCase()));
-        }
-    }
-
-    public static List<WebElement> resolveWebElementsFrom(WebDriver driver, SelectorType selectorType, String selector) {
-        try {
-            By by = resolveByFromSelector(selectorType, selector);
-            return driver.findElements(by);
-        } catch (NoSuchElementException e) {
-            throw new WebElementNotFoundException("Web elements not found according to [selector='%s'] by [selector_type='%s']".formatted(selectorType.name().toLowerCase(), selector));
-        }
-    }
-
-    private static By resolveByFromSelector(SelectorType selectorType, String value) {
-        try {
-            return switch (selectorType) {
-                case TAG -> By.tagName(value);
-                case NAME -> By.name(value);
-                case ID -> By.id(value);
-                case XPATH -> By.xpath(value);
-                case CLASS_NAME -> By.className(value);
-                case CSS_SELECTOR -> By.cssSelector(value);
-                case LINK_TEXT -> By.linkText(value);
-                case PARTIAL_LINK_TEXT -> By.partialLinkText(value);
-            };
-        } catch (Exception ex) {
-            throw new WebElementSelectionException("Found invalid web element selector [selector=%s]".formatted(selectorType.name().toLowerCase()));
-        }
-    }
-
-
     public static String validateAndGetEvalVarName(String varName) {
         if (varName != null) {
             varName = varName.trim();

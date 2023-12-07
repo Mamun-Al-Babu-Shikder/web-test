@@ -10,6 +10,8 @@ public enum ActionType {
     SWITCH_WINDOW("switch_window"),
     NAVIGATION("navigation"),
     FIND_ELEMENT("find_element"),
+    FIND_ELEMENTS("find_elements"),
+    WEB_ELEMENT_OPT("web_element_opt"),
     CLICK("click"),
     ENTER_TEXT("enter_text"),
 

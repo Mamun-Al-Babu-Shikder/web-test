@@ -10,6 +10,9 @@ public class JsonAttributeKeys {
     public static final String TO = "to";
     public static final String SELECT_BY = "select_by";
     public static final String SELECTOR = "selector";
+    public static final String ELEMENT = "element";
+    public static final String OPERATION = "operation";
+    public static final String PARAMS = "params";
     public static final String TEXT = "text";
     public static final String NAME = "name";
     public static final String VALUE = "value";
