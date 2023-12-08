@@ -12,7 +12,9 @@ public enum ActionType {
     FIND_ELEMENT("find_element"),
     FIND_ELEMENTS("find_elements"),
     WEB_ELEMENT_OPT("web_element_opt"),
+    @Deprecated
     CLICK("click"),
+    @Deprecated
     ENTER_TEXT("enter_text"),
 
     DEFINE_VAR("def_var"),

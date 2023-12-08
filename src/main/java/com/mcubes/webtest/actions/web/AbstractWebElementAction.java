@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement;
 
 import static com.mcubes.webtest.constants.JsonAttributeKeys.ELEMENT;
 
+@Deprecated
 public abstract class AbstractWebElementAction implements Action {
     private String elementObject;
     private WebElementProvider webElementProvider;

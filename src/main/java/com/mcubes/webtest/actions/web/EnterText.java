@@ -8,6 +8,7 @@ import org.openqa.selenium.WebElement;
 
 import static com.mcubes.webtest.constants.JsonAttributeKeys.TEXT;
 
+@Deprecated
 public class EnterText extends AbstractWebElementAction {
     private final String text;
 
