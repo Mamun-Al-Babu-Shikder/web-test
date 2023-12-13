@@ -16,7 +16,7 @@ public class UtilityMethods {
 
     @ResolvableMethod("set")
     public static Set<Object> createSet(Object... values) {
-        return new HashSet<>(Set.of(values));
+        return new TreeSet<>(Set.of(values));
     }
 
     @ResolvableMethod("is_null")
