@@ -8,6 +8,7 @@ public enum ActionType {
     OPEN_URL("open_url"),
     OPEN_WINDOW("open_window"),
     SWITCH_WINDOW("switch_window"),
+    MANAGE_WINDOW("manage_window"),
     NAVIGATION("navigation"),
     FIND_ELEMENT("find_element"),
     FIND_ELEMENTS("find_elements"),

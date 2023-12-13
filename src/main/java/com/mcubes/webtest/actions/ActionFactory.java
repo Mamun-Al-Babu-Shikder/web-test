@@ -18,6 +18,7 @@ public class ActionFactory {
                 case OPEN_URL -> OpenURL.from(object);
                 case OPEN_WINDOW -> OpenWindow.from(object);
                 case SWITCH_WINDOW -> SwitchWindow.from(object);
+                case MANAGE_WINDOW -> new ManageWindow(object);
                 case NAVIGATION -> {
                     NavigationType navigationType = NavigationType.from(object.getString(VALUE));
                     yield new Navigator(navigationType, navigationType == NavigationType.TO ? object.getString(URL) : null);
