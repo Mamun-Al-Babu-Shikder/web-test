@@ -33,6 +33,7 @@ public class ActionFactory {
                 case IF_ELSE_STATEMENT -> IfElseStatement.from(object);
                 case SWITCH_CASE_STATEMENT -> null;
                 case FOREACH_LOOP -> ForeachLoop.from(object);
+                case WHILE_LOOP -> new WhileLoop(object);
                 case DELAY -> Delay.from(object);
                 case PRINT, PRINTLN -> Print.from(object);
                 case EVALUATION -> Evaluation.from(object);

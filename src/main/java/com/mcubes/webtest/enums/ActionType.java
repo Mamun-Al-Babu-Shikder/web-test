@@ -23,6 +23,7 @@ public enum ActionType {
     IF_ELSE_STATEMENT("if_else"),
     SWITCH_CASE_STATEMENT("switch"),
     FOREACH_LOOP("foreach"),
+    WHILE_LOOP("while"),
     DELAY("delay"),
     PRINT("print"),
     PRINTLN("println"),
