@@ -104,17 +104,8 @@ class WhileLoopTest {
                 }
                 """;
 
-        final Exception[] exception = new Exception[1];
         List<Step> steps = stepsFromJson(json);
-        assertThrows(StepExecutionException.class, () -> {
-            try {
-                steps.forEach(step -> step.execute(context));
-            } catch (Exception ex) {
-                exception[0] = ex;
-                throw ex;
-            }
-        });
-
-        assertEquals(NullPointerException.class, exception[0].getCause().getClass());
+        Exception exception = assertThrows(StepExecutionException.class, () -> steps.forEach(step -> step.execute(context)));
+        assertEquals(NullPointerException.class, exception.getCause().getClass());
     }
 }
